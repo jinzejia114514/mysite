@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示页面</title>
+    <style>
+        /* 页面样式：居中显示，简洁大气 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Arial", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .countdown {
+            font-size: 24px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主标题 -->
+    <div class="title">不要耍小聪明哦</div>
+    <!-- 倒计时显示 -->
+    <div class="countdown">5秒后自动跳转...</div>
+
+    <script>
+        // 倒计时逻辑与自动跳转
+        let seconds = 5; // 初始倒计时时间
+        const countdownEl = document.querySelector('.countdown');
+
+        // 定时器：每秒更新倒计时
+        const timer = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = `${seconds}秒后自动跳转...`;
+
+            // 倒计时结束：跳转目标网页
+            if (seconds <= 0) {
+                clearInterval(timer); // 清除定时器
+                window.location.href = "https://dumogu.com/benchmark/"; // 毒蘑菇手机性能测试网页地址
+            }
+        }, 1000); // 每1000毫秒（1秒）执行一次
+    </script>
+</body>
+</html>
