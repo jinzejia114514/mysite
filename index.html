@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanazawa服务器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: #1a2a6c;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .server-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .server-info h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .server-intro {
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .server-address {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .address-text {
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .login-btn {
+            background: #ff7e5f;
+            color: white;
+        }
+        
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .qq-btn {
+            background: #12B7F5;
+            color: white;
+        }
+        
+        .video-btn {
+            background: #FF69B4;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.error {
+            background: #ff5252;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .server-address {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kanazawa的服务器网站</h1>
+        
+        <div class="server-info">
+            <h2>服务器介绍</h2>
+            <div class="server-intro">
+                <p>服务器招新，客户端在群。版本1.21.1，主要模组机械动力，暮色森林，mek及其附属，ae及其附属，TaCZ等。欢迎来玩！</p>
+                <p>服务器无需正版，有登录插件，可放心游玩。</p>
+            </div>
+            
+            <div class="server-address">
+                <div class="address-text">mc.kanazawa.top:13365</div>
+                <button class="btn copy-btn" id="copyBtn">复制服务器地址</button>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn login-btn" id="loginBtn">登录</button>
+            <button class="btn qq-btn" id="qqBtn">加入QQ群</button>
+            <button class="btn video-btn" id="videoBtn">宣传视频</button>
+        </div>
+        
+        <footer>
+            © 2025 Kanazawa服务器
+        </footer>
+    </div>
+    
+    <div class="notification" id="notification">
+        <span id="notificationText">操作成功</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.getElementById('loginBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const qqBtn = document.getElementById('qqBtn');
+            const videoBtn = document.getElementById('videoBtn');
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            // 登录按钮点击事件
+            loginBtn.addEventListener('click', function() {
+                showNotification('该功能未开放', true);
+            });
+            
+            // 复制服务器地址按钮点击事件
+            copyBtn.addEventListener('click', function() {
+                const serverAddress = 'mc.kanazawa.top:13365';
+                
+                // 使用现代剪贴板API
+                navigator.clipboard.writeText(serverAddress).then(function() {
+                    showNotification('服务器地址已复制到剪贴板！');
+                }).catch(function(err) {
+                    // 如果剪贴板API不可用，使用备用方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = serverAddress;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification('服务器地址已复制到剪贴板！');
+                    } catch (err) {
+                        showNotification('复制失败，请手动复制：' + serverAddress, true);
+                    }
+                    document.body.removeChild(textArea);
+                });
+            });
+            
+            // 加入QQ群按钮点击事件
+            qqBtn.addEventListener('click', function() {
+                window.open('https://qun.qq.com/universal-share/share?ac=1&authKey=RUvo3iMiSRiTpTxZ5oCVT0Iv2pbb50jDwmYzq8w1MD1ehA2t25SOYJJfLh6t1PUL&busi_data=eyJncm91cENvZGUiOiIzODQyMzI0NDYiLCJ0b2tlbiI6IkZXRTQ1RXdMMnNtS2N3b1RKSDlOMXdhdXVZUUU2cWpydnlTYWZ2aEVqMDV6aEZGUmpLR0p0L1doN2VJaWJRc0oiLCJ1aW4iOiIxOTExODYyNTIxIn0%3D&data=291BQHSWuk46B2U03y7r8UkYpBQx27XiRx6-KTkCRWIQ6SfdUAldoIGdW5PHw_ep6HOZvNDb9fqbaxt0P6pd4Q&svctype=4&tempid=h5_group_info', '_blank');
+            });
+            
+            // 宣传视频按钮点击事件
+            videoBtn.addEventListener('click', function() {
+                window.open('https://www.bilibili.com/video/BV1beawzSE3C/', '_blank');
+            });
+            
+            // 显示通知函数
+            function showNotification(message, isError = false) {
+                notificationText.textContent = message;
+                
+                if (isError) {
+                    notification.classList.add('error');
+                } else {
+                    notification.classList.remove('error');
+                }
+                
+                notification.classList.add('show');
+                
+                // 3秒后隐藏通知
+                setTimeout(function() {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
