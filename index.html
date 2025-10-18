@@ -209,7 +209,15 @@
         .video-btn:hover {
             background: linear-gradient(to right, #FF1493, #FF69B4);
         }
-        
+        .sponsor-btn {
+            background: linear-gradient(to right, #9C27B0, #E91E63);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .sponsor-btn:hover {
+            background: linear-gradient(to right, #E91E63, #9C27B0);
+        }
         .notification {
             position: fixed;
             top: 20px;
@@ -313,6 +321,9 @@
             <button class="btn video-btn" id="videoBtn">
                 <span class="icon">🎬</span> 宣传视频
             </button>
+            <button class="btn sponsor-btn" id="sponsorBtn">
+                <span class="icon">❤️</span> 赞助列表
+            </button>
         </div>
         
         <footer>
@@ -342,6 +353,20 @@
                 loginBtn.style.transform = 'scale(0.95)';
                 setTimeout(function() {
                     loginBtn.style.transform = '';
+                }, 200);
+            });
+
+            // 获取赞助按钮元素
+            const sponsorBtn = document.getElementById('sponsorBtn');
+
+// 赞助按钮点击事件
+            sponsorBtn.addEventListener('click', function() {
+                showNotification('暂时没有人赞助哦', true);
+    
+    // 添加按钮点击效果
+                sponsorBtn.style.transform = 'scale(0.95)';
+                setTimeout(function() {
+                    sponsorBtn.style.transform = '';
                 }, 200);
             });
             
