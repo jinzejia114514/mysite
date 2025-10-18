@@ -464,8 +464,8 @@
     <script>
         // 初始化 Supabase 客户端
         // 请替换为您的实际Supabase项目URL和公钥
-        const supabaseUrl = 'https://your-project-ref.supabase.co';
-        const supabaseKey = 'your-anon-key';
+        const supabaseUrl = 'https://dialzztjdvlyoknwkggp.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpYWx6enRqZHZseW9rbndrZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NzYwNTMsImV4cCI6MjA3NjM1MjA1M30.Yv1wdFBi6rCuAijF2md84wFpVHQbjBeXWadD8Twf_lg';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         document.addEventListener('DOMContentLoaded', function() {
@@ -501,7 +501,7 @@
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'github',
                     options: {
-                        redirectTo: window.location.origin
+                        redirectTo: www.kanazawa.top
                     }
                 });
                 
