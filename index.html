@@ -47,6 +47,23 @@
             border-radius: 10px;
             font-size: 1.1rem;
             display: none;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         h1 {
@@ -380,13 +397,17 @@
             .user-welcome {
                 position: static;
                 margin-bottom: 20px;
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="user-welcome" id="userWelcome"></div>
+        <div class="user-welcome" id="userWelcome">
+            <!-- 这里会动态显示欢迎信息和退出按钮 -->
+        </div>
         
         <h1>Kanazawa的服务器网站</h1>
         
@@ -501,7 +522,7 @@
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'github',
                     options: {
-                        redirectTo: www.kanazawa.top
+                        redirectTo: 'https://www.kanazawa.top' // 修正：添加https://前缀
                     }
                 });
                 
@@ -660,16 +681,37 @@
                                     user.user_metadata.full_name || 
                                     user.email.split('@')[0];
                     
-                    userWelcome.innerHTML = `<span class="icon">👋</span> 欢迎，${userName}！`;
-                    userWelcome.style.display = 'block';
+                    // 创建欢迎信息和退出按钮
+                    userWelcome.innerHTML = `
+                        <span><span class="icon">👋</span> 欢迎，${userName}！</span>
+                        <button class="logout-btn" id="logoutBtn">
+                            <span class="icon">🚪</span> 退出登录
+                        </button>
+                    `;
+                    userWelcome.style.display = 'flex';
                     
-                    // 可以在这里隐藏登录按钮
+                    // 为退出按钮添加事件监听
+                    document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+                    
+                    // 隐藏登录按钮
                     loginBtn.style.display = 'none';
                     githubBtn.style.display = 'none';
                 } else {
                     userWelcome.style.display = 'none';
                     loginBtn.style.display = 'flex';
                     githubBtn.style.display = 'flex';
+                }
+            }
+            
+            // 退出登录函数
+            async function logoutUser() {
+                const { error } = await supabase.auth.signOut();
+                
+                if (error) {
+                    showNotification('退出登录失败: ' + error.message, true);
+                } else {
+                    showNotification('已成功退出登录');
+                    checkUserStatus();
                 }
             }
             
