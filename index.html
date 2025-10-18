@@ -13,21 +13,18 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: 
+                linear-gradient(135deg, rgba(26, 42, 108, 0.7), rgba(178, 31, 31, 0.7), rgba(253, 187, 45, 0.7)),
+                url('img3.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: white;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-        }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         
         .container {
@@ -380,7 +377,7 @@
             
             // 加入QQ群按钮点击事件
             qqBtn.addEventListener('click', function() {
-                window.open('https://qm.qq.com/q/xbqH5KfUre', '_blank');
+                window.open('https://qm.qq.com/q/krBdl92r4Y', '_blank');
                 
                 // 添加按钮点击效果
                 qqBtn.style.transform = 'scale(0.95)';
