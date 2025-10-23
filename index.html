@@ -14,7 +14,7 @@
         }
         
         body {
-            background: url('img3.webp');
+            background: url('img3.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -584,11 +584,11 @@
         
         <div class="image-gallery">
             <div class="image-item">
-                <img src="img1.webp" alt="服务器截图1">
+                <img src="img1.jpg" alt="服务器截图1">
                 <div class="image-caption">服务器主城风景</div>
             </div>
             <div class="image-item">
-                <img src="img2.webp" alt="服务器截图2">
+                <img src="img2.jpg" alt="服务器截图2">
                 <div class="image-caption">玩家建筑展示</div>
             </div>
         </div>
@@ -835,7 +835,7 @@
             randomImageBtn.addEventListener('click', function() {
                 // 假设图片从1到10编号
                 const randomNum = Math.floor(Math.random() * 20) + 1;
-                const imagePath = `image/img${randomNum}.webp`;
+                const imagePath = `image/img${randomNum}.jpg`;
                 
                 // 设置图片源
                 randomImage.src = imagePath;
