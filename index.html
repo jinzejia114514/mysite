@@ -232,6 +232,13 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
+        /* 新增：网页地图按钮样式 */
+        .map-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
@@ -267,6 +274,11 @@
         
         .random-image-btn:hover {
             background: linear-gradient(to right, #FF5722, #FF9800);
+        }
+        
+        /* 新增：网页地图按钮悬停效果 */
+        .map-btn:hover {
+            background: linear-gradient(to right, #96c93d, #00b09b);
         }
         
         /* 登录/注册表单样式 */
@@ -620,6 +632,10 @@
             <button class="btn random-image-btn" id="randomImageBtn">
                 <span class="icon">🖼️</span> 随机美图
             </button>
+            <!-- 新增：网页地图按钮 -->
+            <button class="btn map-btn" id="mapBtn">
+                <span class="icon">🗺️</span> 网页地图
+            </button>
             <button class="btn qq-btn" id="qqBtn">
                 <span class="icon">👥</span> 加入QQ群
             </button>
@@ -674,6 +690,7 @@
             const videoBtn = document.getElementById('videoBtn');
             const sponsorBtn = document.getElementById('sponsorBtn');
             const randomImageBtn = document.getElementById('randomImageBtn');
+            const mapBtn = document.getElementById('mapBtn'); // 新增：网页地图按钮
             const authForm = document.getElementById('authForm');
             const registerBtn = document.getElementById('registerBtn');
             const signinBtn = document.getElementById('signinBtn');
@@ -714,6 +731,18 @@
                 if (e.target === sponsorOverlay) {
                     sponsorOverlay.classList.remove('active');
                 }
+            });
+            
+            // 新增：网页地图按钮点击事件
+            mapBtn.addEventListener('click', function() {
+                // 跳转到网页地图
+                window.open('http://mc.kanazawa.top:36516', '_blank');
+                
+                // 添加按钮点击效果
+                mapBtn.style.transform = 'scale(0.95)';
+                setTimeout(function() {
+                    mapBtn.style.transform = '';
+                }, 200);
             });
             
             // 加载赞助数据函数
