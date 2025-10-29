@@ -14,7 +14,7 @@
         }
         
         body {
-            background: url('img3.png');
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -135,6 +135,85 @@
             letter-spacing: 1px;
         }
         
+        /* 服务器状态查询样式 */
+        .server-status {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .server-status:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .server-status h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .status-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .status-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .status-online {
+            color: #4CAF50;
+        }
+        
+        .status-offline {
+            color: #f44336;
+        }
+        
+        .status-refresh {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
         .image-gallery {
             display: flex;
             justify-content: space-between;
@@ -232,7 +311,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        /* 新增：网页地图按钮样式 */
         .map-btn {
             background: linear-gradient(to right, #00b09b, #96c93d);
             color: white;
@@ -276,12 +354,10 @@
             background: linear-gradient(to right, #FF5722, #FF9800);
         }
         
-        /* 新增：网页地图按钮悬停效果 */
         .map-btn:hover {
             background: linear-gradient(to right, #96c93d, #00b09b);
         }
         
-        /* 登录/注册表单样式 */
         .auth-form {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
@@ -376,7 +452,6 @@
             transform: translateX(0);
         }
         
-        /* 随机图片遮罩层样式 */
         .image-overlay {
             position: fixed;
             top: 0;
@@ -411,7 +486,6 @@
             object-fit: contain;
         }
         
-        /* 赞助列表遮罩层样式 */
         .sponsor-overlay {
             position: fixed;
             top: 0;
@@ -568,6 +642,10 @@
             .sponsor-table td {
                 padding: 8px 10px;
             }
+            
+            .status-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -594,13 +672,41 @@
             </div>
         </div>
         
+        <!-- 新增：服务器状态查询部分 -->
+        <div class="server-status">
+            <h2><span class="icon">📊</span> 服务器状态查询</h2>
+            <div class="status-content">
+                <div class="status-item">
+                    <div class="status-label">服务器状态</div>
+                    <div class="status-value" id="status">查询中...</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">在线玩家</div>
+                    <div class="status-value" id="players">-/-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">服务器版本</div>
+                    <div class="status-value" id="version">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">服务器描述</div>
+                    <div class="status-value" id="motd">-</div>
+                </div>
+            </div>
+            <div class="status-refresh">
+                <button class="refresh-btn" id="refreshStatusBtn">
+                    <span class="icon">🔄</span> 刷新状态
+                </button>
+            </div>
+        </div>
+        
         <div class="image-gallery">
             <div class="image-item">
-                <img src="img1.jpg" alt="服务器截图1">
+                <img src="https://via.placeholder.com/400x250/4CAF50/fff?text=服务器主城" alt="服务器截图1">
                 <div class="image-caption">服务器主城风景</div>
             </div>
             <div class="image-item">
-                <img src="img2.jpg" alt="服务器截图2">
+                <img src="https://via.placeholder.com/400x250/2196F3/fff?text=玩家建筑" alt="服务器截图2">
                 <div class="image-caption">玩家建筑展示</div>
             </div>
         </div>
@@ -632,7 +738,6 @@
             <button class="btn random-image-btn" id="randomImageBtn">
                 <span class="icon">🖼️</span> 随机美图
             </button>
-            <!-- 新增：网页地图按钮 -->
             <button class="btn map-btn" id="mapBtn">
                 <span class="icon">🗺️</span> 网页地图
             </button>
@@ -677,7 +782,6 @@
 
     <script>
         // 初始化 Supabase 客户端
-        // 请替换为您的实际Supabase项目URL和公钥
         const supabaseUrl = 'https://dialzztjdvlyoknwkggp.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpYWx6enRqZHZseW9rbndrZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NzYwNTMsImV4cCI6MjA3NjM1MjA1M30.Yv1wdFBi6rCuAijF2md84wFpVHQbjBeXWadD8Twf_lg';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -690,7 +794,7 @@
             const videoBtn = document.getElementById('videoBtn');
             const sponsorBtn = document.getElementById('sponsorBtn');
             const randomImageBtn = document.getElementById('randomImageBtn');
-            const mapBtn = document.getElementById('mapBtn'); // 新增：网页地图按钮
+            const mapBtn = document.getElementById('mapBtn');
             const authForm = document.getElementById('authForm');
             const registerBtn = document.getElementById('registerBtn');
             const signinBtn = document.getElementById('signinBtn');
@@ -703,8 +807,77 @@
             const closeSponsorBtn = document.getElementById('closeSponsorBtn');
             const sponsorTableContainer = document.getElementById('sponsorTableContainer');
             
+            // 服务器状态相关元素
+            const statusElement = document.getElementById('status');
+            const playersElement = document.getElementById('players');
+            const versionElement = document.getElementById('version');
+            const motdElement = document.getElementById('motd');
+            const refreshStatusBtn = document.getElementById('refreshStatusBtn');
+            
             // 检查用户登录状态
             checkUserStatus();
+            
+            // 页面加载时检查服务器状态
+            checkServerStatus();
+            
+            // 刷新服务器状态按钮点击事件
+            refreshStatusBtn.addEventListener('click', function() {
+                checkServerStatus();
+                
+                // 添加按钮点击效果
+                refreshStatusBtn.style.transform = 'scale(0.95)';
+                setTimeout(function() {
+                    refreshStatusBtn.style.transform = '';
+                }, 200);
+            });
+            
+            // 使用API查询服务器状态
+            async function checkServerStatus() {
+                try {
+                    statusElement.textContent = '查询中...';
+                    statusElement.className = 'status-value';
+                    
+                    const response = await fetch('https://api.mcsrvstat.us/2/mc.kanazawa.top:13365');
+                    const data = await response.json();
+                    
+                    if (data.online) {
+                        // 更新页面显示服务器状态
+                        statusElement.textContent = '在线';
+                        statusElement.className = 'status-value status-online';
+                        playersElement.textContent = `${data.players.online}/${data.players.max}`;
+                        versionElement.textContent = data.version;
+                        
+                        // 如果有MOTD，可以显示
+                        if (data.motd && data.motd.clean) {
+                            motdElement.textContent = data.motd.clean.join(' ');
+                        } else {
+                            motdElement.textContent = '欢迎来到Kanazawa服务器！';
+                        }
+                        
+                        // 显示通知
+                        showNotification('服务器状态: 在线');
+                    } else {
+                        statusElement.textContent = '离线';
+                        statusElement.className = 'status-value status-offline';
+                        playersElement.textContent = '-/-';
+                        versionElement.textContent = '-';
+                        motdElement.textContent = '服务器当前离线';
+                        
+                        // 显示通知
+                        showNotification('服务器状态: 离线', true);
+                    }
+                } catch (error) {
+                    console.error('查询服务器状态失败:', error);
+                    statusElement.textContent = '查询失败';
+                    statusElement.className = 'status-value status-offline';
+                    playersElement.textContent = '-/-';
+                    versionElement.textContent = '-';
+                    motdElement.textContent = '无法连接到状态服务器';
+                    
+                    // 显示通知
+                    showNotification('查询服务器状态失败', true);
+                }
+            }
             
             // 赞助列表按钮点击事件
             sponsorBtn.addEventListener('click', function() {
@@ -733,7 +906,7 @@
                 }
             });
             
-            // 新增：网页地图按钮点击事件
+            // 网页地图按钮点击事件
             mapBtn.addEventListener('click', function() {
                 // 跳转到网页地图
                 window.open('http://mc.kanazawa.top:36516', '_blank');
@@ -862,15 +1035,34 @@
             
             // 随机美图按钮点击事件
             randomImageBtn.addEventListener('click', function() {
-                // 假设图片从1到10编号
-                const randomNum = Math.floor(Math.random() * 20) + 1;
-                const imagePath = `image/img${randomNum}.jpg`;
+                // 使用在线图片库作为示例
+                const imageUrls = [
+                    'https://picsum.photos/800/600?random=1',
+                    'https://picsum.photos/800/600?random=2',
+                    'https://picsum.photos/800/600?random=3',
+                    'https://picsum.photos/800/600?random=4',
+                    'https://picsum.photos/800/600?random=5'
+                ];
                 
-                // 设置图片源
-                randomImage.src = imagePath;
+                const randomIndex = Math.floor(Math.random() * imageUrls.length);
+                const selectedImageUrl = imageUrls[randomIndex];
                 
-                // 显示遮罩层
+                // 显示加载中
+                randomImage.alt = '加载中...';
+                randomImage.src = '';
                 imageOverlay.classList.add('active');
+                
+                // 加载图片
+                const img = new Image();
+                img.onload = function() {
+                    randomImage.src = selectedImageUrl;
+                    randomImage.alt = '随机美图';
+                };
+                img.onerror = function() {
+                    randomImage.src = 'https://via.placeholder.com/800x600/333/fff?text=图片加载失败';
+                    randomImage.alt = '图片加载失败';
+                };
+                img.src = selectedImageUrl;
                 
                 // 添加按钮点击效果
                 randomImageBtn.style.transform = 'scale(0.95)';
@@ -900,7 +1092,7 @@
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'github',
                     options: {
-                        redirectTo: 'https://www.kanazawa.top' // 修正：添加https://前缀
+                        redirectTo: 'https://www.kanazawa.top'
                     }
                 });
                 
