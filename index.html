@@ -316,12 +316,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        .random-image-btn {
-            background: linear-gradient(to right, #FF9800, #FF5722);
-            color: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
         .map-btn {
             background: linear-gradient(to right, #00b09b, #96c93d);
             color: white;
@@ -359,10 +353,6 @@
         
         .sponsor-btn:hover {
             background: linear-gradient(to right, #E91E63, #9C27B0);
-        }
-        
-        .random-image-btn:hover {
-            background: linear-gradient(to right, #FF5722, #FF9800);
         }
         
         .map-btn:hover {
@@ -461,40 +451,6 @@
         
         .notification.show {
             transform: translateX(0);
-        }
-        
-        .image-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            cursor: pointer;
-        }
-        
-        .image-overlay.active {
-            display: flex;
-        }
-        
-        .random-image-container {
-            max-width: 90%;
-            max-height: 90%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .random-image-container img {
-            max-width: 100%;
-            max-height: 90vh;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            object-fit: contain;
         }
         
         .sponsor-overlay {
@@ -742,9 +698,6 @@
             <button class="btn github-btn" id="githubBtn">
                 <span class="icon">🐙</span> GitHub登录
             </button>
-            <button class="btn random-image-btn" id="randomImageBtn">
-                <span class="icon">🖼️</span> 随机美图
-            </button>
             <button class="btn map-btn" id="mapBtn">
                 <span class="icon">🗺️</span> 网页地图
             </button>
@@ -762,13 +715,6 @@
         <footer>
             © 2025 Kanazawa服务器 - 所有权利保留
         </footer>
-    </div>
-    
-    <!-- 随机图片遮罩层 -->
-    <div class="image-overlay" id="imageOverlay">
-        <div class="random-image-container">
-            <img id="randomImage" src="" alt="随机美图">
-        </div>
     </div>
     
     <!-- 赞助列表遮罩层 -->
@@ -800,7 +746,6 @@
             const qqBtn = document.getElementById('qqBtn');
             const videoBtn = document.getElementById('videoBtn');
             const sponsorBtn = document.getElementById('sponsorBtn');
-            const randomImageBtn = document.getElementById('randomImageBtn');
             const mapBtn = document.getElementById('mapBtn');
             const authForm = document.getElementById('authForm');
             const registerBtn = document.getElementById('registerBtn');
@@ -808,8 +753,6 @@
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
             const userWelcome = document.getElementById('userWelcome');
-            const imageOverlay = document.getElementById('imageOverlay');
-            const randomImage = document.getElementById('randomImage');
             const sponsorOverlay = document.getElementById('sponsorOverlay');
             const closeSponsorBtn = document.getElementById('closeSponsorBtn');
             const sponsorTableContainer = document.getElementById('sponsorTableContainer');
@@ -1036,49 +979,6 @@
                 
                 return tableHTML;
             }
-            
-            // 随机美图按钮点击事件
-            randomImageBtn.addEventListener('click', function() {
-                // 使用在线图片库作为示例
-                const imageUrls = [
-                    'https://picsum.photos/800/600?random=1',
-                    'https://picsum.photos/800/600?random=2',
-                    'https://picsum.photos/800/600?random=3',
-                    'https://picsum.photos/800/600?random=4',
-                    'https://picsum.photos/800/600?random=5'
-                ];
-                
-                const randomIndex = Math.floor(Math.random() * imageUrls.length);
-                const selectedImageUrl = imageUrls[randomIndex];
-                
-                // 显示加载中
-                randomImage.alt = '加载中...';
-                randomImage.src = '';
-                imageOverlay.classList.add('active');
-                
-                // 加载图片
-                const img = new Image();
-                img.onload = function() {
-                    randomImage.src = selectedImageUrl;
-                    randomImage.alt = '随机美图';
-                };
-                img.onerror = function() {
-                    randomImage.src = 'https://via.placeholder.com/800x600/333/fff?text=图片加载失败';
-                    randomImage.alt = '图片加载失败';
-                };
-                img.src = selectedImageUrl;
-                
-                // 添加按钮点击效果
-                randomImageBtn.style.transform = 'scale(0.95)';
-                setTimeout(function() {
-                    randomImageBtn.style.transform = '';
-                }, 200);
-            });
-            
-            // 点击遮罩层关闭图片
-            imageOverlay.addEventListener('click', function() {
-                imageOverlay.classList.remove('active');
-            });
             
             // 登录/注册按钮点击事件
             loginBtn.addEventListener('click', function() {
