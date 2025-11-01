@@ -310,6 +310,12 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
+        .music-btn {
+            background: linear-gradient(to right, #FF9800, #FF5722);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
         .sponsor-btn {
             background: linear-gradient(to right, #9C27B0, #E91E63);
             color: white;
@@ -349,6 +355,10 @@
         
         .video-btn:hover {
             background: linear-gradient(to right, #FF1493, #FF69B4);
+        }
+        
+        .music-btn:hover {
+            background: linear-gradient(to right, #FF5722, #FF9800);
         }
         
         .sponsor-btn:hover {
@@ -707,6 +717,9 @@
             <button class="btn video-btn" id="videoBtn">
                 <span class="icon">🎬</span> 宣传视频
             </button>
+            <button class="btn music-btn" id="musicBtn">
+                <span class="icon">🎵</span> 恰喽
+            </button>
             <button class="btn sponsor-btn" id="sponsorBtn">
                 <span class="icon">❤️</span> 赞助列表
             </button>
@@ -745,6 +758,7 @@
             const copyBtn = document.getElementById('copyBtn');
             const qqBtn = document.getElementById('qqBtn');
             const videoBtn = document.getElementById('videoBtn');
+            const musicBtn = document.getElementById('musicBtn');
             const sponsorBtn = document.getElementById('sponsorBtn');
             const mapBtn = document.getElementById('mapBtn');
             const authForm = document.getElementById('authForm');
@@ -825,6 +839,22 @@
                     showNotification('查询服务器状态失败', true);
                 }
             }
+            
+            // 音乐按钮点击事件
+            musicBtn.addEventListener('click', function() {
+                // 创建音频对象并播放
+                const audio = new Audio('1.MP3');
+                audio.play().catch(function(error) {
+                    console.log('音频播放失败:', error);
+                    showNotification('音频播放失败，请检查音频文件是否存在', true);
+                });
+                
+                // 添加按钮点击效果
+                musicBtn.style.transform = 'scale(0.95)';
+                setTimeout(function() {
+                    musicBtn.style.transform = '';
+                }, 200);
+            });
             
             // 赞助列表按钮点击事件
             sponsorBtn.addEventListener('click', function() {
