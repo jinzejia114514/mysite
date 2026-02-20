@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanazawa的服务器网站</title>
     <style>
+        /* 选择页面上的所有“框框”，这里以常见的块级元素为例 */
+        div, section, article, main, header, footer, .box, .card {
+    /* 初始状态：完全透明 */
+            opacity: 0; 
+    /* 应用淡入动画，持续1秒，动画结束后保持最终状态 (forwards) */
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to   {opacity: 1;}
+    }
         * {
             margin: 0;
             padding: 0;
