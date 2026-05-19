@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>双摆模拟</title>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: "Microsoft YaHei", sans-serif; }
+    canvas { display: block; background: #fff; }
+    #panel {
+      position: absolute; right: 0; top: 0; width: 250px; height: 100vh;
+      background: #f0f0f0; padding: 10px; box-sizing: border-box;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+    }
+    .slider-group { display: flex; flex-direction: column; gap: 2px; }
+    label { font-size: 13px; }
+    input[type=range] { width: 100%; }
+    .value { font-size: 12px; text-align: right; }
+    button { padding: 8px; font-size: 14px; margin: 2px; }
+    .switch-btn { background: #f0f0f0; border: 1px solid #aaa; border-radius: 4px; }
+    .switch-btn.active { background: #4682b4; color: white; }
+    #angleInfo { font-size: 13px; margin-top: 5px; background: #fff; padding: 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="panel">
+    <h3 style="margin:5px 0">双摆模拟</h3>
+    
+    <!-- 滑块通过JS动态生成更简单，这里直接硬编码，便于阅读 -->
+    <div class="slider-group"><label>绳长 1 (px)</label><input type="range" id="l1" min="50" max="250" value="150" step="1"><span class="value" id="l1Val">150</span></div>
+    <div class="slider-group"><label>绳长 2 (px)</label><input type="range" id="l2" min="50" max="250" value="150" step="1"><span class="value" id="l2Val">150</span></div>
+    <div class="slider-group"><label>质量 1</label><input type="range" id="m1" min="1" max="10" value="5" step="0.1"><span class="value" id="m1Val">5.0</span></div>
+    <div class="slider-group"><label>质量 2</label><input type="range" id="m2" min="1" max="10" value="5" step="0.1"><span class="value" id="m2Val">5.0</span></div>
+    <div class="slider-group"><label>初始角度 1</label><input type="range" id="a1" min="-180" max="180" value="120" step="1"><span class="value" id="a1Val">120</span></div>
+    <div class="slider-group"><label>初始角度 2</label><input type="range" id="a2" min="-180" max="180" value="-90" step="1"><span class="value" id="a2Val">-90</span></div>
+    <div class="slider-group"><label>空气阻力</label><input type="range" id="damp" min="0" max="0.5" value="0" step="0.01"><span class="value" id="dampVal">0.00</span></div>
+
+    <button id="pauseBtn">暂停</button>
+    <button id="resetBtn">重置</button>
+    <button id="arrowBtn" class="switch-btn active">显示箭头：开</button>
+    <button id="trailBtn" class="switch-btn active">轨迹模式：拖尾</button>
+    
+    <div id="angleInfo">
+      角度1: 120.0°<br>角度2: -90.0°
+    </div>
+  </div>
+
+  <script>
+    // ---------- 物理参数 ----------
+    const g = 1500;
+    const DT = 0.0005;
+    const PIVOT_X = 375;
+    const PIVOT_Y = 150;
+
+    // 状态变量
+    let theta1 = 2.0, theta2 = -1.5;
+    let omega1 = 0, omega2 = 0;
+    
+    // 从滑块读取参数
+    function getParams() {
+      return {
+        l1: parseFloat(document.getElementById('l1').value),
+        l2: parseFloat(document.getElementById('l2').value),
+        m1: parseFloat(document.getElementById('m1').value),
+        m2: parseFloat(document.getElementById('m2').value),
+        damping: parseFloat(document.getElementById('damp').value)
+      };
+    }
+
+    let paused = false;
+    let showArrows = true;
+    let trailMode = true; // true=拖尾， false=永久路径
+    let needReset = false;
+    let lastResetParams = null;
+
+    // 轨迹点存储
+    const MAX_TRAIL = 80;
+    const MAX_PATH = 50000;
+    let trail1 = [], trail2 = [];
+    let pathTrail1 = [], pathTrail2 = [];
+
+    // 重置状态
+    function resetState() {
+      const initA1 = parseFloat(document.getElementById('a1').value) * Math.PI / 180;
+      const initA2 = parseFloat(document.getElementById('a2').value) * Math.PI / 180;
+      theta1 = initA1;
+      theta2 = initA2;
+      omega1 = 0;
+      omega2 = 0;
+      trail1 = [];
+      trail2 = [];
+      pathTrail1 = [];
+      pathTrail2 = [];
+      needReset = false;
+    }
+
+    // 导数计算（与你C++代码一致）
+    function derivatives(th1, th2, om1, om2, l1, l2, m1, m2, damping) {
+      let delta = th1 - th2;
+      let sinDelta = Math.sin(delta);
+      let cosDelta = Math.cos(delta);
+      let sinTh1 = Math.sin(th1);
+      let sinTh2 = Math.sin(th2);
+      let denom = m1 + m2 * sinDelta * sinDelta;
+      if (Math.abs(denom) < 1e-9) denom = 1e-9;
+
+      let term1 = -m2 * om1 * om1 * sinDelta * cosDelta;
+      let term2 = (m2 * g / l1) * sinTh2 * cosDelta;
+      let term3 = -m2 * (l2 / l1) * om2 * om2 * sinDelta;
+      let term4 = -(m1 + m2) * (g / l1) * sinTh1;
+
+      let alpha1 = (term1 + term2 + term3 + term4) / denom;
+      let alpha2 = -(l1 / l2) * alpha1 * cosDelta
+                 + (l1 / l2) * om1 * om1 * sinDelta
+                 - (g / l2) * sinTh2;
+
+      return {
+        dth1: om1,
+        dth2: om2,
+        dom1: alpha1 - damping * om1,
+        dom2: alpha2 - damping * om2
+      };
+    }
+
+    // RK4 积分一步
+    function rk4Step() {
+      const p = getParams();
+      const l1 = p.l1, l2 = p.l2, m1 = p.m1, m2 = p.m2, damping = p.damping;
+      
+      let th1 = theta1, th2 = theta2, om1 = omega1, om2 = omega2;
+      
+      let k1 = derivatives(th1, th2, om1, om2, l1, l2, m1, m2, damping);
+      let k2 = derivatives(th1 + 0.5*DT*k1.dth1, th2 + 0.5*DT*k1.dth2,
+                          om1 + 0.5*DT*k1.dom1, om2 + 0.5*DT*k1.dom2,
+                          l1, l2, m1, m2, damping);
+      let k3 = derivatives(th1 + 0.5*DT*k2.dth1, th2 + 0.5*DT*k2.dth2,
+                          om1 + 0.5*DT*k2.dom1, om2 + 0.5*DT*k2.dom2,
+                          l1, l2, m1, m2, damping);
+      let k4 = derivatives(th1 + DT*k3.dth1, th2 + DT*k3.dth2,
+                          om1 + DT*k3.dom1, om2 + DT*k3.dom2,
+                          l1, l2, m1, m2, damping);
+      
+      theta1 += (DT/6) * (k1.dth1 + 2*k2.dth1 + 2*k3.dth1 + k4.dth1);
+      theta2 += (DT/6) * (k1.dth2 + 2*k2.dth2 + 2*k3.dth2 + k4.dth2);
+      omega1 += (DT/6) * (k1.dom1 + 2*k2.dom1 + 2*k3.dom1 + k4.dom1);
+      omega2 += (DT/6) * (k1.dom2 + 2*k2.dom2 + 2*k3.dom2 + k4.dom2);
+    }
+
+    // ---------- 绘图 ----------
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 750;
+    canvas.height = 650;
+
+    function drawArrow(x, y, vx, vy, color) {
+      let len = Math.sqrt(vx*vx + vy*vy);
+      if (len < 0.01) return;
+      let scale = 0.04;
+      let arrLen = len * scale;
+      if (arrLen > 40) arrLen = 40;
+      let ux = vx/len, uy = vy/len;
+      let ex = x + ux * arrLen;
+      let ey = y + uy * arrLen;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(ex, ey);
+      ctx.stroke();
+      // 三角形箭头
+      let tipSize = 7;
+      let ang = Math.atan2(uy, ux);
+      let p1x = ex - tipSize * Math.cos(ang - 0.5);
+      let p1y = ey - tipSize * Math.sin(ang - 0.5);
+      let p2x = ex - tipSize * Math.cos(ang + 0.5);
+      let p2y = ey - tipSize * Math.sin(ang + 0.5);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(ex, ey);
+      ctx.lineTo(p1x, p1y);
+      ctx.lineTo(p2x, p2y);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawFrame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      let p = getParams();
+      let l1 = p.l1, l2 = p.l2, m1 = p.m1, m2 = p.m2;
+      
+      // 计算位置
+      let x1 = PIVOT_X + l1 * Math.sin(theta1);
+      let y1 = PIVOT_Y + l1 * Math.cos(theta1);
+      let x2 = x1 + l2 * Math.sin(theta2);
+      let y2 = y1 + l2 * Math.cos(theta2);
+      
+      // 记录轨迹（非暂停时）
+      if (!paused) {
+        pathTrail1.push({x: x1, y: y1});
+        pathTrail2.push({x: x2, y: y2});
+        if (pathTrail1.length > MAX_PATH) pathTrail1.shift();
+        if (pathTrail2.length > MAX_PATH) pathTrail2.shift();
+        
+        trail1.push({x: x1, y: y1});
+        trail2.push({x: x2, y: y2});
+        if (trail1.length > MAX_TRAIL) trail1.shift();
+        if (trail2.length > MAX_TRAIL) trail2.shift();
+      }
+      
+      // 绘制轨迹
+      if (trailMode) {
+        // 拖尾渐隐
+        for (let i = 1; i < trail1.length; i++) {
+          let t = i / (trail1.length - 1);
+          let r = 220 + (255-220)*t, g = 50 + (255-50)*t, b = 50 + (255-50)*t;
+          ctx.strokeStyle = `rgb(${r},${g},${b})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(trail1[i-1].x, trail1[i-1].y);
+          ctx.lineTo(trail1[i].x, trail1[i].y);
+          ctx.stroke();
+        }
+        for (let i = 1; i < trail2.length; i++) {
+          let t = i / (trail2.length - 1);
+          let r = 50 + (255-50)*t, g = 100 + (255-100)*t, b = 220 + (255-220)*t;
+          ctx.strokeStyle = `rgb(${r},${g},${b})`;
+          ctx.beginPath();
+          ctx.moveTo(trail2[i-1].x, trail2[i-1].y);
+          ctx.lineTo(trail2[i].x, trail2[i].y);
+          ctx.stroke();
+        }
+      } else {
+        // 永久路径
+        ctx.strokeStyle = '#DC3232';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 1; i < pathTrail1.length; i++) {
+          ctx.moveTo(pathTrail1[i-1].x, pathTrail1[i-1].y);
+          ctx.lineTo(pathTrail1[i].x, pathTrail1[i].y);
+        }
+        ctx.stroke();
+        ctx.strokeStyle = '#3264DC';
+        ctx.beginPath();
+        for (let i = 1; i < pathTrail2.length; i++) {
+          ctx.moveTo(pathTrail2[i-1].x, pathTrail2[i-1].y);
+          ctx.lineTo(pathTrail2[i].x, pathTrail2[i].y);
+        }
+        ctx.stroke();
+      }
+      
+      // 摆臂
+      ctx.strokeStyle = '#3C3C3C';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(PIVOT_X, PIVOT_Y);
+      ctx.lineTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      
+      // 悬挂点
+      ctx.fillStyle = 'black';
+      ctx.beginPath();
+      ctx.arc(PIVOT_X, PIVOT_Y, 5, 0, Math.PI*2);
+      ctx.fill();
+      
+      // 球
+      let r1 = 5 + m1 * 1.7;
+      let r2 = 5 + m2 * 1.7;
+      ctx.fillStyle = '#DC3232';
+      ctx.beginPath();
+      ctx.arc(x1, y1, r1, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#3264DC';
+      ctx.beginPath();
+      ctx.arc(x2, y2, r2, 0, Math.PI*2);
+      ctx.fill();
+      
+      // 速度箭头
+      if (showArrows) {
+        let v1x = l1 * Math.cos(theta1) * omega1;
+        let v1y = -l1 * Math.sin(theta1) * omega1;
+        drawArrow(x1, y1, v1x, v1y, '#DC3232');
+        let v2x = l1 * Math.cos(theta1) * omega1 + l2 * Math.cos(theta2) * omega2;
+        let v2y = -l1 * Math.sin(theta1) * omega1 - l2 * Math.sin(theta2) * omega2;
+        drawArrow(x2, y2, v2x, v2y, '#3264DC');
+      }
+      
+      // 更新角度信息
+      document.getElementById('angleInfo').innerHTML = 
+        `角度1: ${(theta1 * 180 / Math.PI).toFixed(1)}°<br>角度2: ${(theta2 * 180 / Math.PI).toFixed(1)}°`;
+      
+      // 更新滑块值显示
+      document.getElementById('l1Val').textContent = p.l1;
+      document.getElementById('l2Val').textContent = p.l2;
+      document.getElementById('m1Val').textContent = p.m1.toFixed(1);
+      document.getElementById('m2Val').textContent = p.m2.toFixed(1);
+      document.getElementById('a1Val').textContent = document.getElementById('a1').value;
+      document.getElementById('a2Val').textContent = document.getElementById('a2').value;
+      document.getElementById('dampVal').textContent = parseFloat(document.getElementById('damp').value).toFixed(2);
+    }
+
+    // 物理循环（使用requestAnimationFrame）
+    let lastTime = performance.now();
+    let accumulator = 0;
+    function physicsLoop(now) {
+      let elapsed = (now - lastTime) / 1000;
+      lastTime = now;
+      if (elapsed > 0.1) elapsed = 0.1;
+      
+      if (!paused) {
+        accumulator += elapsed;
+        if (needReset) {
+          resetState();
+        }
+        let maxSteps = 500;
+        while (accumulator >= DT && maxSteps-- > 0) {
+          rk4Step();
+          accumulator -= DT;
+        }
+        if (maxSteps <= 0) accumulator = 0;
+      }
+      drawFrame();
+      requestAnimationFrame(physicsLoop);
+    }
+
+    // ---------- 事件绑定 ----------
+    // 滑块改变时设置 needReset = true
+    document.querySelectorAll('input[type=range]').forEach(input => {
+      input.addEventListener('input', () => {
+        needReset = true;
+      });
+    });
+    
+    document.getElementById('pauseBtn').addEventListener('click', () => {
+      paused = !paused;
+      document.getElementById('pauseBtn').textContent = paused ? '运行' : '暂停';
+    });
+    
+    document.getElementById('resetBtn').addEventListener('click', resetState);
+    
+    document.getElementById('arrowBtn').addEventListener('click', function() {
+      showArrows = !showArrows;
+      this.textContent = showArrows ? '显示箭头：开' : '显示箭头：关';
+      this.classList.toggle('active', showArrows);
+    });
+    
+    document.getElementById('trailBtn').addEventListener('click', function() {
+      trailMode = !trailMode;
+      this.textContent = trailMode ? '轨迹模式：拖尾' : '轨迹模式：路径';
+      this.classList.toggle('active', trailMode);
+    });
+    
+    // 启动
+    resetState();
+    requestAnimationFrame(physicsLoop);
+  </script>
+</body>
+</html>
