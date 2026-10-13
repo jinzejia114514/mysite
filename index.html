@@ -203,6 +203,129 @@
             transform: translateY(-2px);
         }
 
+        /* ============================================================
+           顶部选项栏分段导航条 (Segmented Nav Tabs)
+           ============================================================ */
+        .nav-tabs-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 26px;
+            animation: slideDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+        }
+
+        .nav-tabs-bar {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(14, 20, 32, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 6px;
+            border-radius: var(--radius-full);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(16, 185, 129, 0.1);
+            gap: 6px;
+            max-width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-tabs-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab-item {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 9px 20px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .nav-tab-item:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .nav-tab-item.active {
+            color: #fff;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.95));
+            border-color: rgba(74, 222, 128, 0.4);
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+
+        .nav-tab-item i {
+            font-size: 0.95rem;
+            transition: transform 0.25s ease;
+        }
+
+        .nav-tab-item.active i {
+            transform: scale(1.1);
+        }
+
+        /* 视图面板容器与流畅淡入淡出动画 */
+        .view-pane-container {
+            position: relative;
+            min-height: 480px;
+            width: 100%;
+        }
+
+        .view-pane {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px) scale(0.985);
+            will-change: opacity, transform;
+        }
+
+        .view-pane.active {
+            display: block;
+            animation: panePopIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .view-pane.pane-fade-out {
+            display: block;
+            animation: panePopOut 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes panePopIn {
+            0% {
+                opacity: 0;
+                transform: translateY(22px) scale(0.985);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes panePopOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-14px) scale(0.985);
+                filter: blur(4px);
+            }
+        }
+
         /* 英雄品牌卡片 (Hero Section) */
         .hero-section {
             background: var(--bg-card);
@@ -356,6 +479,89 @@
 
         .btn-copy-main:active {
             transform: translateY(1px);
+        }
+
+        /* 主页快捷入口组合 (LittleSkin 皮肤站 & 监控直达) */
+        .hero-sub-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sub-action {
+            background: var(--bg-card-inner);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            min-width: 240px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-sub-action:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
+            background: rgba(22, 30, 48, 0.75);
+        }
+
+        .btn-quick-telemetry:hover {
+            border-color: var(--accent-green-glow);
+            box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
+        }
+
+        .sub-action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .sub-action-info {
+            text-align: left;
+            flex: 1;
+        }
+
+        .sub-action-label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .sub-action-name {
+            display: block;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .sub-action-arrow {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+
+        .btn-sub-action:hover .sub-action-arrow {
+            color: #fff;
+            transform: translateX(3px);
         }
 
         /* 核心仪表盘网格 (Server Dashboard Grid) */
@@ -833,6 +1039,17 @@
             box-shadow: 0 6px 18px rgba(168, 85, 247, 0.25);
         }
         .btn-launch-sponsor:hover { box-shadow: 0 10px 24px rgba(168, 85, 247, 0.4); }
+
+        .btn-launch-skin {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.85), rgba(99, 102, 241, 0.95));
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 6px 18px rgba(14, 165, 233, 0.25);
+            text-decoration: none;
+        }
+        .btn-launch-skin:hover {
+            box-shadow: 0 10px 24px rgba(56, 189, 248, 0.4);
+            color: #fff;
+        }
 
         /* 友情链接卡片 */
         .footer-friends-card {
@@ -1330,6 +1547,11 @@
             .btn-copy-main { width: 100%; justify-content: center; }
             .btn-launch { width: 100%; justify-content: center; }
             .action-launchpad { flex-direction: column; }
+            .hero-sub-actions { flex-direction: column; width: 100%; }
+            .btn-sub-action { width: 100%; }
+            .nav-tabs-wrapper { top: 10px; margin-bottom: 20px; }
+            .nav-tabs-bar { padding: 4px; }
+            .nav-tab-item { padding: 8px 14px; font-size: 0.82rem; }
         }
     </style>
 </head>
@@ -1356,264 +1578,343 @@
             </div>
         </header>
 
-        <!-- 英雄品牌标语与地址复制舱 -->
-        <section class="hero-section">
-            <h1 class="hero-title">纯粹生电 · 自动化乐园</h1>
-            <p class="hero-subtitle">
-                这里是真正追求机械与技术平衡的生电圣地。双端互通支持，采用 Leaves 高性能核心优化，第三方登录保障数据安全。
-            </p>
-
-            <div class="feature-tags">
-                <div class="feature-tag"><i class="fa-solid fa-microchip"></i> Leaves 高性能生电核心</div>
-                <div class="feature-tag"><i class="fa-solid fa-mobile-screen"></i> Java & 基岩双端互通</div>
-                <div class="feature-tag"><i class="fa-solid fa-shield-halved"></i> LittleSkin 第三方安全登录</div>
-                <div class="feature-tag"><i class="fa-solid fa-bolt"></i> 极致红石特性保留</div>
-            </div>
-
-            <!-- 核心地址复制舱 -->
-            <div class="ip-dock-container">
-                <div class="ip-info-group">
-                    <div class="ip-icon-badge">
-                        <i class="fa-solid fa-network-wired"></i>
-                    </div>
-                    <div>
-                        <div class="ip-label">Minecraft Server IP</div>
-                        <div class="ip-text">mc.kanazawa.top</div>
-                    </div>
-                </div>
-                <button class="btn-copy-main" id="heroCopyBtn">
-                    <i class="fa-solid fa-copy"></i> 复制地址
+        <!-- 现代化顶部选项栏 (Segmented Nav Tabs) -->
+        <nav class="nav-tabs-wrapper">
+            <div class="nav-tabs-bar">
+                <button class="nav-tab-item active" data-tab="home" id="tabBtnHome">
+                    <i class="fa-solid fa-house"></i>
+                    <span>主页概览</span>
+                </button>
+                <button class="nav-tab-item" data-tab="telemetry" id="tabBtnTelemetry">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>核心监视器</span>
+                </button>
+                <button class="nav-tab-item" data-tab="media" id="tabBtnMedia">
+                    <i class="fa-solid fa-film"></i>
+                    <span>影音画廊</span>
+                </button>
+                <button class="nav-tab-item" data-tab="sponsors" id="tabBtnSponsors">
+                    <i class="fa-solid fa-heart"></i>
+                    <span>功德光荣榜</span>
                 </button>
             </div>
-        </section>
+        </nav>
 
-        <!-- 生电实时监控中心 (Dashboard) -->
-        <section class="dashboard-section">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fa-solid fa-gauge-high"></i> 生电核心运行监视器
-                </div>
-                <div class="live-status-pill" id="liveStatusBadge">
-                    <i class="fa-solid fa-circle-check"></i> <span id="headerStatusText">连接正常</span>
-                </div>
-            </div>
+        <!-- 主内容视口容器 (包含流畅淡入淡出动画选项卡面板) -->
+        <main class="view-pane-container">
+            <!-- 1. 主页概览视图面板 -->
+            <div class="view-pane active" id="viewHome">
+                <!-- 英雄品牌标语与地址复制舱 -->
+                <section class="hero-section">
+                    <h1 class="hero-title">纯粹生电 · 自动化乐园</h1>
+                    <p class="hero-subtitle">
+                        这里是真正追求机械与技术平衡的生电圣地。双端互通支持，采用 Leaves 高性能核心优化，第三方登录保障数据安全。
+                    </p>
 
-            <!-- 4 核心指标卡片 -->
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-icon"><i class="fa-solid fa-server"></i></div>
-                    <div class="metric-name">服务状态</div>
-                    <div class="metric-value status-good" id="cardStatusVal">运行中</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
-                    <div class="metric-name">在线玩家</div>
-                    <div class="metric-value" id="cardPlayersVal">0 / 20</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon"><i class="fa-solid fa-wave-square"></i></div>
-                    <div class="metric-name">TPS 刻率</div>
-                    <div class="metric-value status-good" id="cardTpsVal">20.00</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <div class="metric-name">持续运行</div>
-                    <div class="metric-value" id="cardUptimeVal">-</div>
-                </div>
-            </div>
+                    <div class="feature-tags">
+                        <div class="feature-tag"><i class="fa-solid fa-microchip"></i> Leaves 高性能生电核心</div>
+                        <div class="feature-tag"><i class="fa-solid fa-mobile-screen"></i> Java & 基岩双端互通</div>
+                        <div class="feature-tag"><i class="fa-solid fa-shield-halved"></i> LittleSkin 第三方安全登录</div>
+                        <div class="feature-tag"><i class="fa-solid fa-bolt"></i> 极致红石特性保留</div>
+                    </div>
 
-            <!-- 实时 TPS 动态波动波形图 -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">
-                        <i class="fa-solid fa-chart-line"></i> 实时刻率波动波形 (Live TPS Heartbeat)
+                    <!-- 核心地址复制舱 -->
+                    <div class="ip-dock-container">
+                        <div class="ip-info-group">
+                            <div class="ip-icon-badge">
+                                <i class="fa-solid fa-network-wired"></i>
+                            </div>
+                            <div>
+                                <div class="ip-label">Minecraft Server IP</div>
+                                <div class="ip-text">mc.kanazawa.top</div>
+                            </div>
+                        </div>
+                        <button class="btn-copy-main" id="heroCopyBtn">
+                            <i class="fa-solid fa-copy"></i> 复制地址
+                        </button>
                     </div>
-                    <div class="chart-stats-badge" id="chartStatsBadge">
-                        采样率: 15s | 当前: 20.0 TPS
-                    </div>
-                </div>
-                <div class="canvas-wrapper">
-                    <canvas id="tpsCanvas"></canvas>
-                </div>
-            </div>
 
-            <!-- 硬件资源进度条网格 -->
-            <div class="progress-bars-grid">
-                <div class="progress-bar-card">
-                    <div class="progress-card-header">
-                        <span><i class="fa-solid fa-cpu"></i> CPU 负载</span>
-                        <span class="progress-val-text" id="cpuValText">0%</span>
-                    </div>
-                    <div class="progress-track-bg">
-                        <div class="progress-fill-bar fill-cpu" id="cpuFillBar"></div>
-                    </div>
-                </div>
+                    <!-- 主页快捷入口组：LittleSkin 皮肤站 & 监控直达 -->
+                    <div class="hero-sub-actions">
+                        <a href="https://littleskin.cn" target="_blank" rel="noopener noreferrer" class="btn-sub-action btn-littleskin-card" id="heroSkinBtn" title="前往 LittleSkin 皮肤站配置游戏角色外观">
+                            <div class="sub-action-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.4);">
+                                <i class="fa-solid fa-shirt"></i>
+                            </div>
+                            <div class="sub-action-info">
+                                <span class="sub-action-label">外置皮肤站</span>
+                                <strong class="sub-action-name">LittleSkin 皮肤站</strong>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square sub-action-arrow"></i>
+                        </a>
 
-                <div class="progress-bar-card">
-                    <div class="progress-card-header">
-                        <span><i class="fa-solid fa-memory"></i> 物理内存占用</span>
-                        <span class="progress-val-text" id="memValText">0%</span>
+                        <button class="btn-sub-action btn-quick-telemetry" id="heroTelemetryBtn" title="快速切换至生电运行监视器">
+                            <div class="sub-action-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green-glow); border-color: rgba(74, 222, 128, 0.4);">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div class="sub-action-info">
+                                <span class="sub-action-label">实时遥测</span>
+                                <strong class="sub-action-name">生电核心监视器</strong>
+                            </div>
+                            <i class="fa-solid fa-angle-right sub-action-arrow"></i>
+                        </button>
                     </div>
-                    <div class="progress-track-bg">
-                        <div class="progress-fill-bar fill-mem" id="memFillBar"></div>
-                    </div>
-                </div>
+                </section>
 
-                <div class="progress-bar-card">
-                    <div class="progress-card-header">
-                        <span><i class="fa-solid fa-cubes"></i> JVM 堆内存</span>
-                        <span class="progress-val-text" id="jvmValText">0%</span>
-                    </div>
-                    <div class="progress-track-bg">
-                        <div class="progress-fill-bar fill-jvm" id="jvmFillBar"></div>
-                    </div>
-                </div>
-            </div>
+                    <!-- 生电常用指令速查卡片 (新增实用模块) -->
+                    <section class="commands-section">
+                        <div class="section-title">
+                            <i class="fa-solid fa-terminal"></i> 生电常用快捷指令 (点击一键复制)
+                        </div>
+                        <div class="commands-grid">
+                            <div class="command-item" data-cmd="/spawn">
+                                <div>
+                                    <div class="command-code">/spawn</div>
+                                    <div class="command-desc">返回服务器主城</div>
+                                </div>
+                                <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
+                            </div>
+                            <div class="command-item" data-cmd="/tpa ">
+                                <div>
+                                    <div class="command-code">/tpa &lt;玩家&gt;</div>
+                                    <div class="command-desc">请求传送到玩家</div>
+                                </div>
+                                <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
+                            </div>
+                            <div class="command-item" data-cmd="/tpaccept">
+                                <div>
+                                    <div class="command-code">/tpaccept</div>
+                                    <div class="command-desc">同意传送请求</div>
+                                </div>
+                                <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
+                            </div>
+                            <div class="command-item" data-cmd="/back">
+                                <div>
+                                    <div class="command-code">/back</div>
+                                    <div class="command-desc">返回上一次死亡点</div>
+                                </div>
+                                <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
+                            </div>
+                        </div>
+                    </section>
 
-            <!-- 网络与磁盘 IO 动态吞吐 -->
-            <div class="throughput-grid">
-                <div class="throughput-pill">
-                    <span><i class="fa-solid fa-arrow-up" style="color:var(--accent-blue)"></i> 网络上传</span>
-                    <strong id="netUpText">0 KB/s</strong>
-                </div>
-                <div class="throughput-pill">
-                    <span><i class="fa-solid fa-arrow-down" style="color:var(--accent-green-glow)"></i> 网络下载</span>
-                    <strong id="netDownText">0 KB/s</strong>
-                </div>
-                <div class="throughput-pill">
-                    <span><i class="fa-solid fa-hard-drive" style="color:var(--accent-purple)"></i> 磁盘读 / 写</span>
-                    <strong id="diskIoText">0 / 0 KB/s</strong>
-                </div>
-            </div>
-
-            <!-- 拓展工具交互按钮组 -->
-            <div class="dashboard-tools-bar">
-                <button class="btn-dash-tool" id="btnModalPlayers">
-                    <i class="fa-solid fa-users"></i> 玩家监控
-                </button>
-                <button class="btn-dash-tool" id="btnModalPlugins">
-                    <i class="fa-solid fa-puzzle-piece"></i> 模组档案
-                </button>
-                <button class="btn-dash-tool" id="btnModalLogs">
-                    <i class="fa-solid fa-terminal"></i> 运行日志
-                </button>
-                <button class="btn-dash-tool btn-highlight" id="btnDashRefresh">
-                    <i class="fa-solid fa-rotate"></i> 刷新监控
-                </button>
-            </div>
-        </section>
-
-        <!-- 影院与画廊展区 (Media Cinema & Gallery) -->
-        <section class="media-showcase-section">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fa-solid fa-film"></i> 影像记录与主城风景
-                </div>
-                <a href="https://www.bilibili.com/video/BV1CeFzzYEMd/" target="_blank" style="color:var(--accent-green-glow); text-decoration:none; font-size:0.85rem; font-weight:600;">
-                    B站官方主页 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
-
-            <!-- 自适应 16:9 影院窗口 -->
-            <div class="video-cinema-box">
-                <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=821894&bvid=BV1es411o7jc&cid=3230278&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
-            </div>
-
-            <!-- 截图画廊 (支持点击全屏灯箱放大) -->
-            <div class="gallery-grid">
-                <div class="gallery-card" data-src="img1.webp">
-                    <img src="img1.webp" alt="服务器主城风景" loading="lazy">
-                    <div class="gallery-overlay-badge">
-                        <span><i class="fa-solid fa-camera"></i> 服务器主城风景</span>
-                        <span class="gallery-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> 点击大图</span>
+                    <!-- 核心导航动作栏 (Action Launchpad) -->
+                    <div class="action-launchpad">
+                        <button class="btn-launch btn-launch-copy" id="dockCopyBtn">
+                            <i class="fa-solid fa-copy"></i> 复制服务器地址
+                        </button>
+                        <a href="https://littleskin.cn" target="_blank" rel="noopener noreferrer" class="btn-launch btn-launch-skin" id="dockSkinBtn">
+                            <i class="fa-solid fa-shirt"></i> LittleSkin 皮肤站
+                        </a>
+                        <button class="btn-launch btn-launch-qq" id="dockQqBtn">
+                            <i class="fa-brands fa-qq"></i> 加入官方 QQ 群
+                        </button>
+                        <button class="btn-launch btn-launch-video" id="dockVideoBtn">
+                            <i class="fa-solid fa-play"></i> 宣传视频
+                        </button>
+                        <button class="btn-launch btn-launch-music" id="dockMusicBtn">
+                            <i class="fa-solid fa-music"></i> 恰喽音效
+                        </button>
+                        <button class="btn-launch btn-launch-sponsor" id="dockSponsorBtn">
+                            <i class="fa-solid fa-heart"></i> 赞助排行榜
+                        </button>
                     </div>
-                </div>
-                <div class="gallery-card" data-src="img2.webp">
-                    <img src="img2.webp" alt="玩家建筑展示" loading="lazy">
-                    <div class="gallery-overlay-badge">
-                        <span><i class="fa-solid fa-cubes-stacked"></i> 玩家大型生电建筑</span>
-                        <span class="gallery-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> 点击大图</span>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 生电常用指令速查卡片 (新增实用模块) -->
-        <section class="commands-section">
-            <div class="section-title">
-                <i class="fa-solid fa-terminal"></i> 生电常用快捷指令 (点击一键复制)
-            </div>
-            <div class="commands-grid">
-                <div class="command-item" data-cmd="/spawn">
-                    <div>
-                        <div class="command-code">/spawn</div>
-                        <div class="command-desc">返回服务器主城</div>
-                    </div>
-                    <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
-                </div>
-                <div class="command-item" data-cmd="/tpa ">
-                    <div>
-                        <div class="command-code">/tpa &lt;玩家&gt;</div>
-                        <div class="command-desc">请求传送到玩家</div>
-                    </div>
-                    <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
-                </div>
-                <div class="command-item" data-cmd="/tpaccept">
-                    <div>
-                        <div class="command-code">/tpaccept</div>
-                        <div class="command-desc">同意传送请求</div>
-                    </div>
-                    <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
-                </div>
-                <div class="command-item" data-cmd="/back">
-                    <div>
-                        <div class="command-code">/back</div>
-                        <div class="command-desc">返回上一次死亡点</div>
-                    </div>
-                    <i class="fa-regular fa-copy" style="color:var(--text-muted)"></i>
-                </div>
-            </div>
-        </section>
+                    <!-- 友情链接生态卡片 -->
+                    <section class="footer-friends-card">
+                        <div class="section-title" style="justify-content:center; font-size:1.05rem;">
+                            <i class="fa-solid fa-handshake"></i> 生电与开发伙伴
+                        </div>
+                        <div class="friends-btn-group">
+                            <button class="btn-friend" id="friendBaiLing">
+                                <i class="fa-solid fa-server"></i> 白灵的服务器
+                            </button>
+                            <button class="btn-friend" id="friendAiLife">
+                                <i class="fa-solid fa-robot"></i> AI 人生重开模拟器
+                            </button>
+                        </div>
+                    </section>
+                </div> <!-- 结束 viewHome -->
 
-        <!-- 核心导航动作栏 (Action Launchpad) -->
-        <div class="action-launchpad">
-            <button class="btn-launch btn-launch-copy" id="dockCopyBtn">
-                <i class="fa-solid fa-copy"></i> 复制服务器地址
-            </button>
-            <button class="btn-launch btn-launch-qq" id="dockQqBtn">
-                <i class="fa-brands fa-qq"></i> 加入官方 QQ 群
-            </button>
-            <button class="btn-launch btn-launch-video" id="dockVideoBtn">
-                <i class="fa-solid fa-play"></i> 宣传视频
-            </button>
-            <button class="btn-launch btn-launch-music" id="dockMusicBtn">
-                <i class="fa-solid fa-music"></i> 恰喽音效
-            </button>
-            <button class="btn-launch btn-launch-sponsor" id="dockSponsorBtn">
-                <i class="fa-solid fa-heart"></i> 赞助排行榜
-            </button>
+                <!-- 2. 生电核心运行监视器视图面板 -->
+                <div class="view-pane" id="viewTelemetry">
+                    <!-- 生电实时监控中心 (Dashboard) -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-gauge-high"></i> 生电核心运行监视器
+                            </div>
+                            <div class="live-status-pill" id="liveStatusBadge">
+                                <i class="fa-solid fa-circle-check"></i> <span id="headerStatusText">连接正常</span>
+                            </div>
+                        </div>
+
+                        <!-- 4 核心指标卡片 -->
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="fa-solid fa-server"></i></div>
+                                <div class="metric-name">服务状态</div>
+                                <div class="metric-value status-good" id="cardStatusVal">运行中</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
+                                <div class="metric-name">在线玩家</div>
+                                <div class="metric-value" id="cardPlayersVal">0 / 20</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="fa-solid fa-wave-square"></i></div>
+                                <div class="metric-name">TPS 刻率</div>
+                                <div class="metric-value status-good" id="cardTpsVal">20.00</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                                <div class="metric-name">持续运行</div>
+                                <div class="metric-value" id="cardUptimeVal">-</div>
+                            </div>
+                        </div>
+
+                        <!-- 实时 TPS 动态波动波形图 -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    <i class="fa-solid fa-chart-line"></i> 实时刻率波动波形 (Live TPS Heartbeat)
+                                </div>
+                                <div class="chart-stats-badge" id="chartStatsBadge">
+                                    采样率: 15s | 当前: 20.0 TPS
+                                </div>
+                            </div>
+                            <div class="canvas-wrapper">
+                                <canvas id="tpsCanvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 硬件资源进度条网格 -->
+                        <div class="progress-bars-grid">
+                            <div class="progress-bar-card">
+                                <div class="progress-card-header">
+                                    <span><i class="fa-solid fa-cpu"></i> CPU 负载</span>
+                                    <span class="progress-val-text" id="cpuValText">0%</span>
+                                </div>
+                                <div class="progress-track-bg">
+                                    <div class="progress-fill-bar fill-cpu" id="cpuFillBar"></div>
+                                </div>
+                            </div>
+
+                            <div class="progress-bar-card">
+                                <div class="progress-card-header">
+                                    <span><i class="fa-solid fa-memory"></i> 物理内存占用</span>
+                                    <span class="progress-val-text" id="memValText">0%</span>
+                                </div>
+                                <div class="progress-track-bg">
+                                    <div class="progress-fill-bar fill-mem" id="memFillBar"></div>
+                                </div>
+                            </div>
+
+                            <div class="progress-bar-card">
+                                <div class="progress-card-header">
+                                    <span><i class="fa-solid fa-cubes"></i> JVM 堆内存</span>
+                                    <span class="progress-val-text" id="jvmValText">0%</span>
+                                </div>
+                                <div class="progress-track-bg">
+                                    <div class="progress-fill-bar fill-jvm" id="jvmFillBar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 网络与磁盘 IO 动态吞吐 -->
+                        <div class="throughput-grid">
+                            <div class="throughput-pill">
+                                <span><i class="fa-solid fa-arrow-up" style="color:var(--accent-blue)"></i> 网络上传</span>
+                                <strong id="netUpText">0 KB/s</strong>
+                            </div>
+                            <div class="throughput-pill">
+                                <span><i class="fa-solid fa-arrow-down" style="color:var(--accent-green-glow)"></i> 网络下载</span>
+                                <strong id="netDownText">0 KB/s</strong>
+                            </div>
+                            <div class="throughput-pill">
+                                <span><i class="fa-solid fa-hard-drive" style="color:var(--accent-purple)"></i> 磁盘读 / 写</span>
+                                <strong id="diskIoText">0 / 0 KB/s</strong>
+                            </div>
+                        </div>
+
+                        <!-- 拓展工具交互按钮组 -->
+                        <div class="dashboard-tools-bar">
+                            <button class="btn-dash-tool" id="btnModalPlayers">
+                                <i class="fa-solid fa-users"></i> 玩家监控
+                            </button>
+                            <button class="btn-dash-tool" id="btnModalPlugins">
+                                <i class="fa-solid fa-puzzle-piece"></i> 模组档案
+                            </button>
+                            <button class="btn-dash-tool" id="btnModalLogs">
+                                <i class="fa-solid fa-terminal"></i> 运行日志
+                            </button>
+                            <button class="btn-dash-tool btn-highlight" id="btnDashRefresh">
+                                <i class="fa-solid fa-rotate"></i> 刷新监控
+                            </button>
+                        </div>
+                    </section>
+                </div> <!-- 结束 viewTelemetry -->
+
+                <!-- 3. 影音画廊展示视图面板 -->
+                <div class="view-pane" id="viewMedia">
+                    <!-- 影院与画廊展区 (Media Cinema & Gallery) -->
+                    <section class="media-showcase-section">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-film"></i> 影像记录与主城风景
+                            </div>
+                            <a href="https://www.bilibili.com/video/BV1CeFzzYEMd/" target="_blank" style="color:var(--accent-green-glow); text-decoration:none; font-size:0.85rem; font-weight:600;">
+                                B站官方主页 <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+
+                        <!-- 自适应 16:9 影院窗口 -->
+                        <div class="video-cinema-box">
+                            <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=821894&bvid=BV1es411o7jc&cid=3230278&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                        </div>
+
+                        <!-- 截图画廊 (支持点击全屏灯箱放大) -->
+                        <div class="gallery-grid">
+                            <div class="gallery-card" data-src="img1.webp">
+                                <img src="img1.webp" alt="服务器主城风景" loading="lazy">
+                                <div class="gallery-overlay-badge">
+                                    <span><i class="fa-solid fa-camera"></i> 服务器主城风景</span>
+                                    <span class="gallery-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> 点击大图</span>
+                                </div>
+                            </div>
+                            <div class="gallery-card" data-src="img2.webp">
+                                <img src="img2.webp" alt="玩家建筑展示" loading="lazy">
+                                <div class="gallery-overlay-badge">
+                                    <span><i class="fa-solid fa-cubes-stacked"></i> 玩家大型生电建筑</span>
+                                    <span class="gallery-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> 点击大图</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div> <!-- 结束 viewMedia -->
+
+                <!-- 4. 赞助功德光荣榜独立视图面板 -->
+                <div class="view-pane" id="viewSponsors">
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-heart" style="color:var(--accent-purple)"></i> 赞助功德光荣榜
+                            </div>
+                            <div class="live-status-pill" style="border-color:rgba(192, 132, 252, 0.4); color:var(--accent-purple); background:rgba(192, 132, 252, 0.1);">
+                                <i class="fa-solid fa-coins"></i> <span>为服务器添砖加瓦</span>
+                            </div>
+                        </div>
+                        <div id="tabSponsorTableBox" style="min-height:220px;">
+                            <p style="text-align:center; padding:30px; color:var(--text-muted)">正在读取功德记录...</p>
+                        </div>
+                    </section>
+                </div> <!-- 结束 viewSponsors -->
+            </main> <!-- 结束 view-pane-container -->
+
+            <!-- 全局页脚 -->
+            <footer>
+                &copy; 2025 Kanazawa 生电服务器 · 保留所有权利 · 基于 OPanel 实时工业遥测
+            </footer>
         </div>
-
-        <!-- 友情链接生态卡片 -->
-        <section class="footer-friends-card">
-            <div class="section-title" style="justify-content:center; font-size:1.05rem;">
-                <i class="fa-solid fa-handshake"></i> 生电与开发伙伴
-            </div>
-            <div class="friends-btn-group">
-                <button class="btn-friend" id="friendBaiLing">
-                    <i class="fa-solid fa-server"></i> 白灵的服务器
-                </button>
-                <button class="btn-friend" id="friendAiLife">
-                    <i class="fa-solid fa-robot"></i> AI 人生重开模拟器
-                </button>
-            </div>
-        </section>
-
-        <!-- 页脚 -->
-        <footer>
-            &copy; 2025 Kanazawa 生电服务器 · 保留所有权利 · 基于 OPanel 实时工业遥测
-        </footer>
-    </div>
 
     <!-- ============================================================
          增强版四大模态交互窗口 (Modals)
@@ -1769,6 +2070,10 @@
             const navRefreshBtn = document.getElementById('navRefreshBtn');
             const btnDashRefresh = document.getElementById('btnDashRefresh');
             const navMusicToggle = document.getElementById('navMusicToggle');
+            const heroTelemetryBtn = document.getElementById('heroTelemetryBtn');
+            const heroSkinBtn = document.getElementById('heroSkinBtn');
+            const dockSkinBtn = document.getElementById('dockSkinBtn');
+            const tabSponsorTableBox = document.getElementById('tabSponsorTableBox');
 
             const cardStatusVal = document.getElementById('cardStatusVal');
             const cardPlayersVal = document.getElementById('cardPlayersVal');
@@ -1793,6 +2098,105 @@
             let cachedLogLines = [];
             let tpsHistory = [20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0];
             let activeAudio = null;
+            let currentTab = 'home';
+            let isSwitchingTab = false;
+
+            // ============================================================
+            // 0. 顶部选项栏与多视图平滑弹出淡出调度器 (Segmented Tab Controller)
+            // ============================================================
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+
+            function switchTab(targetTabId, updateHash = true) {
+                if (currentTab === targetTabId || isSwitchingTab) return;
+
+                const currentPane = document.getElementById(`view${capitalize(currentTab)}`);
+                const targetPane = document.getElementById(`view${capitalize(targetTabId)}`);
+                if (!targetPane) return;
+
+                isSwitchingTab = true;
+
+                // 1. 选项栏高亮胶囊切换
+                document.querySelectorAll('.nav-tab-item').forEach(btn => {
+                    if (btn.getAttribute('data-tab') === targetTabId) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // 2. 流畅弹出/淡出切换动效
+                if (currentPane) {
+                    currentPane.classList.add('pane-fade-out');
+                    setTimeout(() => {
+                        currentPane.classList.remove('active', 'pane-fade-out');
+                        currentPane.style.display = 'none';
+
+                        targetPane.style.display = 'block';
+                        void targetPane.offsetWidth; // 触发 CSS 动画
+                        targetPane.classList.add('active');
+
+                        currentTab = targetTabId;
+                        isSwitchingTab = false;
+
+                        // 3. 特殊 Tab 的延时触发
+                        if (targetTabId === 'telemetry') {
+                            setTimeout(drawTpsWave, 50);
+                        } else if (targetTabId === 'sponsors') {
+                            loadSponsorsData();
+                        }
+                    }, 180);
+                } else {
+                    targetPane.style.display = 'block';
+                    targetPane.classList.add('active');
+                    currentTab = targetTabId;
+                    isSwitchingTab = false;
+                }
+
+                if (updateHash) {
+                    history.replaceState(null, null, `#${targetTabId}`);
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // 绑定选项栏按钮点击
+            document.querySelectorAll('.nav-tab-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.getAttribute('data-tab');
+                    switchTab(tab);
+                });
+            });
+
+            // 主页“查看实时工况”快捷直达核心监视器
+            if (heroTelemetryBtn) {
+                heroTelemetryBtn.addEventListener('click', () => {
+                    switchTab('telemetry');
+                });
+            }
+
+            // 监听 Hash 路由初始化与切换
+            function handleHashRoute() {
+                const hash = window.location.hash.replace('#', '').toLowerCase();
+                const validTabs = ['home', 'telemetry', 'media', 'sponsors'];
+                if (validTabs.includes(hash)) {
+                    switchTab(hash, false);
+                }
+            }
+            window.addEventListener('hashchange', handleHashRoute);
+            handleHashRoute();
+
+            // LittleSkin 皮肤站点击 Toast 提示
+            if (heroSkinBtn) {
+                heroSkinBtn.addEventListener('click', () => {
+                    showToast('正在前往 LittleSkin 皮肤站...');
+                });
+            }
+            if (dockSkinBtn) {
+                dockSkinBtn.addEventListener('click', () => {
+                    showToast('正在前往 LittleSkin 皮肤站...');
+                });
+            }
 
             // ============================================================
             // 1. Canvas 科技红石/星空粒子系统 (超轻量 60FPS)
@@ -2321,12 +2725,20 @@
 
             searchLogInput.addEventListener('input', renderLogs);
 
-            // 6.4 赞助排行榜模态框 (读取 prof.txt)
+            // 6.4 赞助排行榜渲染与加载逻辑 (读取 prof.txt，同时服务 Tab 面板与模态框)
             const sponsorTableBox = document.getElementById('sponsorTableBox');
+            let cachedSponsorsHtml = '';
 
-            dockSponsorBtn.addEventListener('click', async () => {
-                openModal('modalSponsors');
-                sponsorTableBox.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted)">正在读取功德记录...</p>';
+            async function loadSponsorsData() {
+                if (cachedSponsorsHtml) {
+                    if (sponsorTableBox) sponsorTableBox.innerHTML = cachedSponsorsHtml;
+                    if (tabSponsorTableBox) tabSponsorTableBox.innerHTML = cachedSponsorsHtml;
+                    return;
+                }
+
+                if (sponsorTableBox) sponsorTableBox.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted)">正在读取功德记录...</p>';
+                if (tabSponsorTableBox) tabSponsorTableBox.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted)">正在读取功德记录...</p>';
+
                 try {
                     const res = await fetch('prof.txt');
                     if (!res.ok) throw new Error('数据文件获取失败');
@@ -2354,19 +2766,20 @@
                     sponsors.sort((a, b) => b.amount - a.amount);
 
                     let html = `
-                        <div style="margin-bottom:14px; color:var(--text-secondary); font-size:0.88rem; display:flex; justify-content:space-between;">
+                        <div style="margin-bottom:14px; color:var(--text-secondary); font-size:0.88rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                             <span>赞助人总数: <strong>${sponsors.length}</strong> 位</span>
                             <span>功德总计: <strong style="color:var(--accent-purple)">${total.toFixed(2)} 元</strong></span>
                         </div>
-                        <table class="sponsor-rank-table">
-                            <thead>
-                                <tr>
-                                    <th style="width:15%">排名</th>
-                                    <th style="width:55%">赞助功德人</th>
-                                    <th style="width:30%; text-align:right">金额</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div style="overflow-x:auto;">
+                            <table class="sponsor-rank-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:15%">排名</th>
+                                        <th style="width:55%">赞助功德人</th>
+                                        <th style="width:30%; text-align:right">金额</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                     `;
 
                     sponsors.forEach((sp, idx) => {
@@ -2384,11 +2797,20 @@
                         `;
                     });
 
-                    html += `</tbody></table>`;
-                    sponsorTableBox.innerHTML = html;
+                    html += `</tbody></table></div>`;
+                    cachedSponsorsHtml = html;
+                    if (sponsorTableBox) sponsorTableBox.innerHTML = html;
+                    if (tabSponsorTableBox) tabSponsorTableBox.innerHTML = html;
                 } catch (e) {
-                    sponsorTableBox.innerHTML = `<p style="text-align:center; padding:30px; color:var(--accent-rose)">读取赞助数据失败: ${e.message}</p>`;
+                    const errHtml = `<p style="text-align:center; padding:30px; color:var(--accent-rose)">读取赞助数据失败: ${e.message}</p>`;
+                    if (sponsorTableBox) sponsorTableBox.innerHTML = errHtml;
+                    if (tabSponsorTableBox) tabSponsorTableBox.innerHTML = errHtml;
                 }
+            }
+
+            dockSponsorBtn.addEventListener('click', () => {
+                switchTab('sponsors');
+                showToast('已切换至功德光荣榜');
             });
 
             // ============================================================
