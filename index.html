@@ -501,15 +501,6 @@
         .copy-btn:hover {
             box-shadow: 0 10px 24px rgba(76, 175, 80, 0.4);
         }
-        
-        .map-btn {
-            background: linear-gradient(135deg, rgba(13, 148, 136, 0.9), rgba(20, 184, 166, 0.95));
-            border: 1px solid rgba(94, 234, 212, 0.4);
-            box-shadow: 0 6px 18px rgba(20, 184, 166, 0.25);
-        }
-        .map-btn:hover {
-            box-shadow: 0 10px 24px rgba(20, 184, 166, 0.4);
-        }
 
         .qq-btn {
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.9), rgba(14, 165, 233, 0.95));
@@ -976,9 +967,6 @@
         
         <!-- 核心导航按钮组 -->
         <div class="button-group">
-            <button class="btn map-btn" id="mapBtn">
-                <i class="fa-solid fa-map-location-dot"></i> 网页地图
-            </button>
             <button class="btn copy-btn" id="copyBtn2">
                 <i class="fa-solid fa-copy"></i> 复制服务器地址
             </button>
@@ -1079,7 +1067,6 @@
             const videoBtn = document.getElementById('videoBtn');
             const musicBtn = document.getElementById('musicBtn');
             const sponsorBtn = document.getElementById('sponsorBtn');
-            const mapBtn = document.getElementById('mapBtn');
             const friendBtn = document.getElementById('friendBtn');
             const aiLifeBtn = document.getElementById('aiLifeBtn');
 
@@ -1493,13 +1480,6 @@
             closeSponsorBtn.addEventListener('click', () => sponsorOverlay.classList.remove('active'));
             sponsorOverlay.addEventListener('click', (e) => {
                 if (e.target === sponsorOverlay) sponsorOverlay.classList.remove('active');
-            });
-            
-            // 网页地图按钮点击事件
-            mapBtn.addEventListener('click', function() {
-                window.open('http://bedrock.kanazawa.top:12927', '_blank');
-                mapBtn.style.transform = 'scale(0.96)';
-                setTimeout(() => mapBtn.style.transform = '', 180);
             });
             
             // 加载赞助数据函数
