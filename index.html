@@ -2008,71 +2008,82 @@
                 }
 
                 try {
-                    const [infoRes, monitorRes, playersRes] = await Promise.all([
-                        fetch(`${O_PANEL_API_BASE}/open-api/info`),
-                        fetch(`${O_PANEL_API_BASE}/open-api/monitor`),
-                        fetch(`${O_PANEL_API_BASE}/open-api/players`)
+                    // 带超时的安全拉取封装
+                    const fetchWithTimeout = async (url) => {
+                        const controller = new AbortController();
+                        const timer = setTimeout(() => controller.abort(), 6000);
+                        try {
+                            const res = await fetch(url, { signal: controller.signal });
+                            clearTimeout(timer);
+                            if (res.ok) return await res.json();
+                            return null;
+                        } catch {
+                            clearTimeout(timer);
+                            return null;
+                        }
+                    };
+
+                    const [infoData, monitorData, playersData] = await Promise.all([
+                        fetchWithTimeout(`${O_PANEL_API_BASE}/open-api/info`),
+                        fetchWithTimeout(`${O_PANEL_API_BASE}/open-api/monitor`),
+                        fetchWithTimeout(`${O_PANEL_API_BASE}/open-api/players`)
                     ]);
 
-                    if (!infoRes.ok || !monitorRes.ok) {
-                        throw new Error(`遥测端响应异常 (${infoRes.status}/${monitorRes.status})`);
+                    if (playersData && playersData.players) {
+                        cachedPlayers = playersData.players;
                     }
 
-                    const infoData = await infoRes.json();
-                    const monitorData = await monitorRes.json();
-                    let playersData = { players: [] };
-                    if (playersRes.ok) {
-                        playersData = await playersRes.json();
-                        cachedPlayers = playersData.players || [];
-                    }
+                    // 1. 服务状态 & 基础信息
+                    if (infoData) {
+                        cardStatusVal.textContent = '运行正常';
+                        cardStatusVal.className = 'metric-value status-good';
+                        headerStatusText.textContent = '连接正常';
+                        cardUptimeVal.textContent = formatUptime(infoData.uptime);
 
-                    // 1. 运行状态
-                    cardStatusVal.textContent = '运行正常';
-                    cardStatusVal.className = 'metric-value status-good';
-                    headerStatusText.textContent = '连接正常';
-
-                    // 2. 在线玩家数
-                    const onlineCount = cachedPlayers.filter(p => p.isOnline).length;
-                    const maxPlayers = infoData.maxPlayerCount || 20;
-                    cardPlayersVal.textContent = `${onlineCount} / ${maxPlayers}`;
-
-                    // 3. TPS 刻率
-                    const tps = typeof monitorData.tps === 'number' ? monitorData.tps : 20;
-                    cardTpsVal.textContent = tps.toFixed(2);
-                    if (tps >= 19.5) {
-                        cardTpsVal.className = 'metric-value status-good';
-                    } else if (tps >= 15.0) {
-                        cardTpsVal.className = 'metric-value status-warning';
+                        const onlineCount = cachedPlayers.filter(p => p.isOnline).length;
+                        const maxPlayers = infoData.maxPlayerCount || 20;
+                        cardPlayersVal.textContent = `${onlineCount} / ${maxPlayers}`;
+                    } else if (monitorData || playersData) {
+                        cardStatusVal.textContent = '运行正常';
+                        cardStatusVal.className = 'metric-value status-good';
+                        headerStatusText.textContent = '连接正常';
                     } else {
-                        cardTpsVal.className = 'metric-value status-bad';
+                        throw new Error('所有接口均无法连通');
                     }
 
-                    // 更新波形数组
-                    tpsHistory.push(parseFloat(tps.toFixed(2)));
-                    if (tpsHistory.length > 20) tpsHistory.shift();
-                    drawTpsWave();
-                    chartStatsBadge.textContent = `实时采样: 15s | 当前: ${tps.toFixed(2)} TPS`;
+                    // 2. 性能监控指标 (若某次超时则平滑维持，绝不崩溃)
+                    if (monitorData) {
+                        const tps = typeof monitorData.tps === 'number' ? monitorData.tps : 20;
+                        cardTpsVal.textContent = tps.toFixed(2);
+                        if (tps >= 19.5) {
+                            cardTpsVal.className = 'metric-value status-good';
+                        } else if (tps >= 15.0) {
+                            cardTpsVal.className = 'metric-value status-warning';
+                        } else {
+                            cardTpsVal.className = 'metric-value status-bad';
+                        }
 
-                    // 4. 持续运行时间
-                    cardUptimeVal.textContent = formatUptime(infoData.uptime);
+                        tpsHistory.push(parseFloat(tps.toFixed(2)));
+                        if (tpsHistory.length > 20) tpsHistory.shift();
+                        drawTpsWave();
+                        chartStatsBadge.textContent = `实时采样: 15s | 当前: ${tps.toFixed(2)} TPS`;
 
-                    // 5. 资源负载进度条
-                    const cpu = Math.round(monitorData.cpu || 0);
-                    cpuValText.textContent = `${cpu}%`;
-                    cpuFillBar.style.width = `${Math.min(100, Math.max(0, cpu))}%`;
+                        const cpu = Math.round(monitorData.cpu || 0);
+                        cpuValText.textContent = `${cpu}%`;
+                        cpuFillBar.style.width = `${Math.min(100, Math.max(0, cpu))}%`;
 
-                    const mem = Math.round(monitorData.memory || 0);
-                    memValText.textContent = `${mem}%`;
-                    memFillBar.style.width = `${Math.min(100, Math.max(0, mem))}%`;
+                        const mem = Math.round(monitorData.memory || 0);
+                        memValText.textContent = `${mem}%`;
+                        memFillBar.style.width = `${Math.min(100, Math.max(0, mem))}%`;
 
-                    const jvm = Math.round(monitorData.jvmMemory || 0);
-                    jvmValText.textContent = `${jvm}%`;
-                    jvmFillBar.style.width = `${Math.min(100, Math.max(0, jvm))}%`;
+                        const jvm = Math.round(monitorData.jvmMemory || 0);
+                        jvmValText.textContent = `${jvm}%`;
+                        jvmFillBar.style.width = `${Math.min(100, Math.max(0, jvm))}%`;
 
-                    // 6. 吞吐速率
-                    netUpText.textContent = formatSpeed(monitorData.networkUpload);
-                    netDownText.textContent = formatSpeed(monitorData.networkDownload);
-                    diskIoText.textContent = `${formatSpeed(monitorData.diskRead)} / ${formatSpeed(monitorData.diskWrite)}`;
+                        netUpText.textContent = formatSpeed(monitorData.networkUpload);
+                        netDownText.textContent = formatSpeed(monitorData.networkDownload);
+                        diskIoText.textContent = `${formatSpeed(monitorData.diskRead)} / ${formatSpeed(monitorData.diskWrite)}`;
+                    }
 
                     if (isManual) {
                         showToast('生电核心数据已刷新');
@@ -2311,7 +2322,6 @@
             searchLogInput.addEventListener('input', renderLogs);
 
             // 6.4 赞助排行榜模态框 (读取 prof.txt)
-            const dockSponsorBtn = document.getElementById('dockSponsorBtn');
             const sponsorTableBox = document.getElementById('sponsorTableBox');
 
             dockSponsorBtn.addEventListener('click', async () => {
