@@ -1072,7 +1072,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 服务器地址常量配置
             const SERVER_ADDRESS = 'mc.kanazawa.top';
-            const O_PANEL_API_BASE = 'http://play.simpfun.cn:34091';
+            const O_PANEL_API_BASE = 'https://server.kanazawa.top';
 
             // 主要按钮元素
             const copyBtn = document.getElementById('copyBtn');
@@ -1275,13 +1275,7 @@
                     console.error('获取 OPanel 服务器信息失败:', error);
                     statusState.textContent = '无法连接';
                     statusState.className = 'status-card-val status-offline';
-                    tpsVal.textContent = '-';
-                    
-                    if (window.location.protocol === 'https:') {
-                        statusNotice.innerHTML = '提示：当前页面通过 HTTPS 访问，OPanel 开放 API 为 HTTP 接口。若无法加载数据，请在浏览器地址栏允许加载不安全内容或通过 HTTP 访问网站。';
-                    } else {
-                        statusNotice.textContent = '提示：暂时无法获取 OPanel 服务器数据，请检查网络或服务器状态。';
-                    }
+                    statusNotice.textContent = '提示：暂时无法连接到服务器监控接口，请稍后重试。';
 
                     if (isManual) {
                         showNotification('刷新失败，请检查网络连接', true);
